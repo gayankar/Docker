@@ -7,4 +7,5 @@ COPY /home/flask_tutorial/flask /etc/nginx/sites-available/
 RUN ln -s /etc/nginx/sites-available /etc/nginx/sites-enabled
 RUN unlink /etc/nginx/sites-enabled/default
 RUN systemctl restart nginx
+EXPOSE 80
 CMD []
