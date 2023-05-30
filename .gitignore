@@ -1,4 +1,4 @@
 #this is git ignore document
 /docker_images
 
-/.gitignore
+.gitignore
