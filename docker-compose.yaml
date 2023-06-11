@@ -1,17 +1,19 @@
 version: '3'
+services:
   #Database
   db:
     image: mysql:latest
     volumes:
       - db_data:/var/lib/mysql
     restart: always
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: xxxxxxxx
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wp_admin
-      MYSQL_PASSWORD: XXXXXXXXX
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
    networks:
-     -wordpress-mysql
+     -wpnetwork
 
   #phpmyadmin
   phpmyadmin:
@@ -21,11 +23,14 @@ version: '3'
     restart: always
     ports:
       - '8080:80'
+    env_file: .env
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: XXXXXX
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
     network:
-      - wordpress-mysql
+      - wpnetwork
   #Wordpress
   wordpress:
     depends_on:
@@ -34,16 +39,20 @@ version: '3'
     ports:
       - '8080:80'
     restart: always
-    volumes: ['./:/var/www/html']
+    volumes: 
+      - wp_data:/var/www/html
+    env_file: .env
     environment:
       WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: admin-wp
-      WORDPRESS_DB_PASSWORD: XXXXXXXXX
+      WORDPRESS_DB_NAME: $MYSQL_DATABASE
+      WORDPRESS_DB_USER: $MYSQL_USER
+      WORDPRESS_DB_PASSWORD: $MYSQL_PASSWORD
     networks:
-      - wordpress-mysql
-    networks:
-      wordpress-mysql
-    volumes:
-      db_data
+      - wpnetwork
+networks:
+    wpnetwork
+volumes:
+    db_data
+    wp_data
       
 
